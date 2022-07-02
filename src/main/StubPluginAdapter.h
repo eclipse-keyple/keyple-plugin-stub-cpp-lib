@@ -21,6 +21,7 @@
 #include "ObservablePluginSpi.h"
 
 /* Keyple Plugin Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubPlugin.h"
 #include "StubPluginFactoryAdapter.h"
 #include "StubReaderAdapter.h"
@@ -39,7 +40,7 @@ using namespace keyple::core::plugin::spi;
  *
  * @since 2.0.0
  */
-class StubPluginAdapter : public StubPlugin, public ObservablePluginSpi {
+class KEYPLEPLUGINSTUB_API StubPluginAdapter : public StubPlugin, public ObservablePluginSpi {
 public:
     /**
      * (package-private )constructor

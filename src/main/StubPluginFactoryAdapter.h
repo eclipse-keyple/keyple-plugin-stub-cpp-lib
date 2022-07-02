@@ -16,6 +16,7 @@
 #include "PluginFactorySpi.h"
 
 /* Keyple Plugin Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubPluginFactory.h"
 #include "StubSmartCard.h"
 
@@ -31,7 +32,7 @@ using namespace keyple::core::plugin::spi;
  *
  * @since 2.0.0
  */
-class StubPluginFactoryAdapter final : public StubPluginFactory, public PluginFactorySpi {
+class KEYPLEPLUGINSTUB_API StubPluginFactoryAdapter final : public StubPluginFactory, public PluginFactorySpi {
 public:
     /**
      * (package-private)
@@ -40,7 +41,7 @@ public:
      *
      * @since 2.0.0
      */
-    class StubReaderConfiguration {
+    class KEYPLEPLUGINSTUB_API StubReaderConfiguration {
     public:
         /**
          * (package-private) constructor for a reader configuration

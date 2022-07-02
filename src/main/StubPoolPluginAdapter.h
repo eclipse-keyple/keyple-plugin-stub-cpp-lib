@@ -18,6 +18,7 @@
 #include <vector>
 
 /* Keyple Plugin Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubPluginAdapter.h"
 #include "StubPoolPlugin.h"
 #include "StubPoolPluginFactoryAdapter.h"
@@ -41,7 +42,7 @@ using StubPoolReaderConfiguration = StubPoolPluginFactoryAdapter::StubPoolReader
  *
  * @since 2.0.0
  */
-class StubPoolPluginAdapter
+class KEYPLEPLUGINSTUB_API StubPoolPluginAdapter
 : public StubPoolPlugin, public PoolPluginSpi, public ObservablePluginSpi {
 public:
     /**

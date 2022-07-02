@@ -17,6 +17,7 @@
 #include <vector>
 
 /* Keyple Plugin Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubPoolPluginFactory.h"
 #include "StubPoolPluginFactoryAdapter.h"
 #include "StubSmartCard.h"
@@ -32,14 +33,14 @@ using StubPoolReaderConfiguration = StubPoolPluginFactoryAdapter::StubPoolReader
  *
  * @since 2.0.0
  */
-class StubPoolPluginFactoryBuilder final {
+class KEYPLEPLUGINSTUB_API StubPoolPluginFactoryBuilder final {
 public:
     /**
      * Builder to build a StubPoolPluginFactory.
      *
      * @since 2.0.0
      */
-    class Builder {
+    class KEYPLEPLUGINSTUB_API Builder {
     public:
         /**
          *

@@ -14,7 +14,8 @@
 
 #include <string>
 
-/* Keyple Plugin  Stub */
+/* Keyple Plugin Stub */
+#include "KeyplePluginStubExport.h"
 #include "StubPluginFactoryAdapter.h"
 #include "StubPoolPluginFactory.h"
 #include "StubPoolPluginFactoryAdapter.h"
@@ -36,13 +37,13 @@ using StubReaderConfiguration = StubPluginFactoryAdapter::StubReaderConfiguratio
  *
  * @since 2.0.0
  */
-class StubPoolPluginFactoryAdapter final
+class KEYPLEPLUGINSTUB_API StubPoolPluginFactoryAdapter final
 : public StubPoolPluginFactory, public PoolPluginFactorySpi {
 public:
     /**
      *
      */
-    class StubPoolReaderConfiguration : public StubReaderConfiguration {
+    class KEYPLEPLUGINSTUB_API StubPoolReaderConfiguration : public StubReaderConfiguration {
     public:
         /**
          * (package-private) constructor for a reader configuration
