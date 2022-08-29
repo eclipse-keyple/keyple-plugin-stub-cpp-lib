@@ -24,6 +24,7 @@ SET(KEYPLE_UTIL_LIB        "keypleutilcpplib")
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/spi
 
     ${CALYPSONET_CARD_DIR}/src/main
     ${CALYPSONET_CARD_DIR}/src/main/spi

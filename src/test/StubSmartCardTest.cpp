@@ -35,6 +35,14 @@ static const std::string commandHex = "1234567890ABCDEFFEDCBA0987654321";
 static const std::string commandHexRegexp = "1234.*";
 static const std::string responseHex = "response";
 
+class ApduResponseProviderSpiImpl : public ApduResponseProviderSpi {
+public:
+    const std::string getResponseFromRequest(const std::string& apduRequest) override
+    {
+        return apduRequest == commandHex ? responseHex : "";
+    }
+};
+
 static std::shared_ptr<StubSmartCard> buildACard()
 {
     return StubSmartCard::builder()->withPowerOnData(powerOnData)
@@ -84,6 +92,22 @@ TEST(StubSmartCardTest, sendApdu_adpuNotExists_sendException)
     setUp();
 
     EXPECT_THROW(card->processApdu(HexUtil::toByteArray("excp")), CardIOException);
+
+    tearDown();
+}
+
+TEST(StubSmartCardTest, shouldUse_a_apduResponseProvider_to_sendResponse)
+{
+    setUp();
+
+    card = StubSmartCard::builder()->withPowerOnData(powerOnData)
+                                    .withProtocol(protocol)
+                                    .withApduResponseProvider(
+                                        std::make_shared<ApduResponseProviderSpiImpl>())
+                                    .build();
+    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
+
+    ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
