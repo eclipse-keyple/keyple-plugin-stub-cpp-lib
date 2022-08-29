@@ -14,7 +14,7 @@
 
 /* Keyple Core Util */
 #include "Arrays.h"
-#include "ByteArrayUtil.h"
+#include "HexUtil.h"
 #include "InterruptedException.h"
 #include "KeypleAssert.h"
 #include "Thread.h"
@@ -112,7 +112,7 @@ bool StubReaderAdapter::checkCardPresence()
 
 const std::string StubReaderAdapter::getPowerOnData() const
 {
-    return ByteArrayUtil::toHex(mSmartCard->getPowerOnData());
+    return HexUtil::toHex(mSmartCard->getPowerOnData());
 }
 
 const std::vector<uint8_t> StubReaderAdapter::transmitApdu(const std::vector<uint8_t>& apduIn)

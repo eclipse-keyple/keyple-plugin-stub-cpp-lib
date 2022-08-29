@@ -13,7 +13,7 @@
 #include "StubSmartCard.h"
 
 /* Keyple Core Util */
-#include "ByteArrayUtil.h"
+#include "HexUtil.h"
 #include "KeypleStd.h"
 #include "Pattern.h"
 
@@ -99,13 +99,13 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
     }
 
     /* Convert apduIn to hex */
-    const std::string hexApdu = ByteArrayUtil::toHex(apduIn);
+    const std::string hexApdu = HexUtil::toHex(apduIn);
 
     /* Return matching hex response if the provided APDU matches the regex */
     for (const auto& hexCommand : mHexCommands) {
         std::unique_ptr<Pattern> p = Pattern::compile(hexCommand.first);
         if (p->matcher(hexApdu)->matches()) {
-            return ByteArrayUtil::fromHex(hexCommand.second);
+            return HexUtil::toByteArray(hexCommand.second);
         }
     }
 
@@ -116,7 +116,7 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
 std::ostream& operator<<(std::ostream& os, const std::shared_ptr<StubSmartCard> ssc)
 {
     os << "STUB_SMART_CARD: {"
-       << "POWER_ON_DATA = " << ByteArrayUtil::toHex(ssc->mPowerOnData) << ", "
+       << "POWER_ON_DATA = " << HexUtil::toHex(ssc->mPowerOnData) << ", "
        << "CARD_PROTOCOL = " << ssc->mCardProtocol << ", "
        << "IS_PHYSICAL_CHANNEL_OPEN = " << ssc->mIsPhysicalChannelOpen << ", "
        << "HEX_COMMANDS(#) = " << ssc->mHexCommands.size()
