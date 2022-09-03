@@ -43,7 +43,7 @@ public:
          * @param command hexadecimal command to respond to (can be a regexp to match multiple apdu)
          * @param response hexadecimal response
          * @return next step of builder
-         * @since 2.0.0
+         * @since 2.1.0
          */
         virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
                                                            const std::string& response) = 0;
@@ -94,7 +94,7 @@ public:
          * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
         *         multiple apdu)
          * @return next step of builder
-         * @since 2.0.0
+         * @since 2.1.0
          */
         virtual BuildStep& withApduResponseProvider(
             std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
@@ -178,7 +178,7 @@ public:
         /**
          * {@inheritDoc}
          *
-         * @since 2.0.0
+         * @since 2.1.0
          */
         BuildStep& withApduResponseProvider(
             std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) override;

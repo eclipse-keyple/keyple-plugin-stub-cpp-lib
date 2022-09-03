@@ -22,8 +22,8 @@ namespace plugin {
 namespace stub {
 
 /**
- * This interface is used to provide APDU responses according to an APDU request. It is used by
- * StubSmartCard to delegate it APDU response providing to another class. *
+ * This interface must be used to provide an APDU response according to an APDU request. It is used
+ * by StubSmartCard to delegate it APDU response providing to another class. *
  *
  * @since 2.1.0
  */
