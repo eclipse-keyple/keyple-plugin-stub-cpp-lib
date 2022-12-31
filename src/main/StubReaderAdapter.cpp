@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -14,7 +14,7 @@
 
 /* Keyple Core Util */
 #include "Arrays.h"
-#include "ByteArrayUtil.h"
+#include "HexUtil.h"
 #include "InterruptedException.h"
 #include "KeypleAssert.h"
 #include "Thread.h"
@@ -112,7 +112,7 @@ bool StubReaderAdapter::checkCardPresence()
 
 const std::string StubReaderAdapter::getPowerOnData() const
 {
-    return ByteArrayUtil::toHex(mSmartCard->getPowerOnData());
+    return HexUtil::toHex(mSmartCard->getPowerOnData());
 }
 
 const std::vector<uint8_t> StubReaderAdapter::transmitApdu(const std::vector<uint8_t>& apduIn)

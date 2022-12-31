@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -21,7 +21,7 @@
 #include "CardIOException.h"
 
 /* Keyple Core Util */
-#include "ByteArrayUtil.h"
+#include "HexUtil.h"
 #include "IllegalArgumentException.h"
 
 using namespace testing;
@@ -41,7 +41,7 @@ static const std::string responseHex = "response";
 
 static std::shared_ptr<StubSmartCard> buildCard(const std::string& protocol)
 {
-    return StubSmartCard::builder()->withPowerOnData(ByteArrayUtil::fromHex("0000"))
+    return StubSmartCard::builder()->withPowerOnData(HexUtil::toByteArray("0000"))
                                     .withProtocol(protocol)
                                     .withSimulatedCommand(commandHex, responseHex)
                                     .build();
@@ -87,11 +87,12 @@ TEST(StubReaderAdapterTest, insert_card_with_activated_protocol)
     adapter->insertCard(card);
 
     ASSERT_EQ(adapter->getSmartcard(), card);
-    ASSERT_EQ(adapter->getPowerOnData(), ByteArrayUtil::toHex(card->getPowerOnData()));
+    ASSERT_EQ(adapter->getPowerOnData(), HexUtil::toHex(card->getPowerOnData()));
     ASSERT_EQ(adapter->isPhysicalChannelOpen(), card->isPhysicalChannelOpen());
     ASSERT_TRUE(adapter->checkCardPresence());
     ASSERT_TRUE(adapter->isCurrentProtocol(PROTOCOL));
-    ASSERT_EQ(adapter->transmitApdu(ByteArrayUtil::fromHex(commandHex)), ByteArrayUtil::fromHex(responseHex));
+    ASSERT_EQ(adapter->transmitApdu(HexUtil::toByteArray(commandHex)),
+                                    HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
@@ -165,7 +166,7 @@ TEST(StubReaderAdapterTest, op_without_card)
 
     ASSERT_FALSE(adapter->isCurrentProtocol("any"));
 
-    EXPECT_THROW(adapter->transmitApdu(ByteArrayUtil::fromHex(commandHex)), CardIOException);
+    EXPECT_THROW(adapter->transmitApdu(HexUtil::toByteArray(commandHex)), CardIOException);
 
     tearDown();
 }

@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -17,7 +17,7 @@
 #include "StubSmartCard.h"
 
 /* Keyple Core Util */
-#include "ByteArrayUtil.h"
+#include "HexUtil.h"
 
 /* Keyple Core Plugin */
 #include "CardIOException.h"
@@ -53,13 +53,13 @@ static void tearDown()
     card.reset();
 }
 
-TEST(StubSmartCardTest, sendApdu_adpuExists_sendResponse)
+TEST(StubSmartCardTest, sendApdu_apduExists_sendResponse)
 {
     setUp();
 
-    const std::vector<uint8_t> apduResponse = card->processApdu(ByteArrayUtil::fromHex(commandHex));
+    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
 
-    ASSERT_EQ(apduResponse, ByteArrayUtil::fromHex(responseHex));
+    ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
@@ -72,9 +72,9 @@ TEST(StubSmartCardTest, sendApdu_adpuRegexpExists_sendResponse)
                                     .withProtocol(protocol)
                                     .withSimulatedCommand(commandHexRegexp, responseHex)
                                     .build();
-    const std::vector<uint8_t> apduResponse = card->processApdu(ByteArrayUtil::fromHex(commandHex));
+    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
 
-    ASSERT_EQ(apduResponse, ByteArrayUtil::fromHex(responseHex));
+    ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
@@ -83,7 +83,7 @@ TEST(StubSmartCardTest, sendApdu_adpuNotExists_sendException)
 {
     setUp();
 
-    EXPECT_THROW(card->processApdu(ByteArrayUtil::fromHex("excp")), CardIOException);
+    EXPECT_THROW(card->processApdu(HexUtil::toByteArray("excp")), CardIOException);
 
     tearDown();
 }
