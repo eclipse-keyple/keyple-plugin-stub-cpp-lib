@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -19,11 +19,14 @@
 #include <vector>
 
 /* Keyple Plugin Stub */
+#include "ApduResponseProviderSpi.h"
 #include "KeyplePluginStubExport.h"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
+
+using namespace keyple::plugin::stub::spi;
 
 /**
  * Simulated smart card that can be inserted into a {@link StubReader}. Use the {@link Builder} to
@@ -33,6 +36,38 @@ namespace stub {
  */
 class KEYPLEPLUGINSTUB_API StubSmartCard {
 public:
+    class SimulatedCommandStep {
+    public:
+        /**
+         * Add simulated command/response to the StubSmartCard to build. Command and response
+         * should be hexadecimal.
+         *
+         * @param command hexadecimal command to respond to (can be a regexp to match multiple apdu)
+         * @param response hexadecimal response
+         * @return next step of builder
+         * @since 2.0.0
+         */
+        virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
+                                                           const std::string& response) = 0;
+
+        /**
+         * Build the StubSmartCard
+         *
+         * @return new instance a StubSmartCard
+         */
+        virtual std::shared_ptr<StubSmartCard> build() = 0;
+    };
+
+    class BuildStep {
+    public:
+        /**
+         * Build the StubSmartCard
+         *
+         * @return new instance a StubSmartCard
+         */
+        virtual std::shared_ptr<StubSmartCard> build() = 0;
+    };
+
     class CommandStep {
     public:
         /**
@@ -44,8 +79,20 @@ public:
          * @return next step of builder
          * @since 2.0.0
          */
-        virtual CommandStep& withSimulatedCommand(const std::string& command,
-                                                  const std::string& response) = 0;
+        virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
+                                                           const std::string& response) = 0;
+
+        /**
+         * Provide simulated command/response to the StubSmartCard using a custom provider
+         * implementing of ApduResponseProviderSpi.
+         *
+         * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
+         *     multiple apdu)
+         * @return next step of builder
+         * @since 2.0.0
+         */
+        virtual BuildStep& withApduResponseProvider(
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
 
         /**
          * Build the StubSmartCard
@@ -70,7 +117,7 @@ public:
     class PowerOnDataStep {
     public:
         /**
-         * 
+         *
          */
         virtual ~PowerOnDataStep() = default;
 
@@ -89,7 +136,12 @@ public:
      *
      * @since 2.0.0
      */
-    class Builder : public PowerOnDataStep, public ProtocolStep, public CommandStep {
+    class Builder
+    : public PowerOnDataStep,
+      public ProtocolStep,
+      public CommandStep,
+      public BuildStep,
+      public SimulatedCommandStep {
     public:
         /**
          *
@@ -101,8 +153,8 @@ public:
          *
          * @since 2.0.0
          */
-        Builder& withSimulatedCommand(const std::string& command, const std::string& response)
-            override;
+        SimulatedCommandStep& withSimulatedCommand(const std::string& command,
+                                                   const std::string& response) override;
 
         /**
          * {@inheritDoc}
@@ -123,7 +175,15 @@ public:
          *
          * @since 2.0.0
          */
-        Builder& withProtocol(const std::string& protocol) override;
+        CommandStep& withProtocol(const std::string& protocol) override;
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 2.0.0
+         */
+        BuildStep& withApduResponseProvider(
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) override;
 
     private:
         /**
@@ -140,6 +200,11 @@ public:
          *
          */
         std::map<std::string, std::string> mHexCommands;
+
+        /**
+         *
+         */
+        std::shared_ptr<ApduResponseProviderSpi> mApduResponseProvider;
 
         /**
          *
@@ -242,8 +307,15 @@ private:
     const std::map<std::string, std::string> mHexCommands;
 
     /**
+     *
+     */
+    const std::shared_ptr<ApduResponseProviderSpi> mApduResponseProvider;
+
+    /**
      * (private) <br>
-     * Create a simulated smart card with mandatory parameters
+     * Create a simulated smart card with mandatory parameters The response APDU can be provided
+     * using <code>apduResponseProvider</code> if it is not null or <code>hexCommands</code> by
+     * default.
      *
      * @param powerOnData (non nullable) power-on data of the card
      * @param cardProtocol (non nullable) card protocol
@@ -252,7 +324,8 @@ private:
      */
     StubSmartCard(const std::vector<uint8_t>& powerOnData,
                   const std::string& cardProtocol,
-                  const std::map<std::string, std::string>& hexCommands);
+                  const std::map<std::string, std::string>& hexCommands,
+                  const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
 };
 
 }

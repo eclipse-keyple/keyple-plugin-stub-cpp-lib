@@ -32,8 +32,8 @@ using namespace keyple::core::util::cpp;
 
 StubSmartCard::Builder::Builder() {}
 
-StubSmartCard::Builder& StubSmartCard::Builder::withSimulatedCommand(const std::string& command,
-                                                                     const std::string& response)
+StubSmartCard::SimulatedCommandStep& StubSmartCard::Builder::withSimulatedCommand(
+    const std::string& command, const std::string& response)
 {
     /* Add commands without space */
     std::string cmd = command;
@@ -47,7 +47,7 @@ StubSmartCard::Builder& StubSmartCard::Builder::withSimulatedCommand(const std::
 std::shared_ptr<StubSmartCard> StubSmartCard::Builder::build()
 {
     return std::shared_ptr<StubSmartCard>(
-               new StubSmartCard(mPowerOnData, mCardProtocol, mHexCommands));
+               new StubSmartCard(mPowerOnData, mCardProtocol, mHexCommands, mApduResponseProvider));
 }
 
 StubSmartCard::ProtocolStep& StubSmartCard::Builder::withPowerOnData(
@@ -58,9 +58,17 @@ StubSmartCard::ProtocolStep& StubSmartCard::Builder::withPowerOnData(
     return *this;
 }
 
-StubSmartCard::Builder& StubSmartCard::Builder::withProtocol(const std::string& protocol)
+StubSmartCard::CommandStep& StubSmartCard::Builder::withProtocol(const std::string& protocol)
 {
     mCardProtocol = protocol;
+
+    return *this;
+}
+
+StubSmartCard::BuildStep& StubSmartCard::Builder::withApduResponseProvider(
+    const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+{
+    mApduResponseProvider = apduResponseProvider;
 
     return *this;
 }
@@ -101,11 +109,20 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
     /* Convert apduIn to hex */
     const std::string hexApdu = HexUtil::toHex(apduIn);
 
-    /* Return matching hex response if the provided APDU matches the regex */
-    for (const auto& hexCommand : mHexCommands) {
-        std::unique_ptr<Pattern> p = Pattern::compile(hexCommand.first);
-        if (p->matcher(hexApdu)->matches()) {
-            return HexUtil::toByteArray(hexCommand.second);
+    if (mApduResponseProvider != nullptr) {
+        const std::string responseFromRequest =
+            mApduResponseProvider->getResponseFromRequest(hexApdu);
+        if (responseFromRequest != "") {
+            return HexUtil::toByteArray(responseFromRequest);
+        }
+
+    } else if (!mHexCommands.empty()) {
+        /* Return matching hex response if the provided APDU matches the regex */
+        for (const auto& hexCommand : mHexCommands) {
+            std::unique_ptr<Pattern> p = Pattern::compile(hexCommand.first);
+            if (p->matcher(hexApdu)->matches()) {
+                return HexUtil::toByteArray(hexCommand.second);
+            }
         }
     }
 
@@ -132,11 +149,13 @@ std::unique_ptr<StubSmartCard::PowerOnDataStep> StubSmartCard::builder()
 
 StubSmartCard::StubSmartCard(const std::vector<uint8_t>& powerOnData,
                              const std::string& cardProtocol,
-                             const std::map<std::string, std::string>& hexCommands)
+                             const std::map<std::string, std::string>& hexCommands,
+                             const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
 : mPowerOnData(powerOnData),
   mCardProtocol(cardProtocol),
   mIsPhysicalChannelOpen(false),
-  mHexCommands(hexCommands) {}
+  mHexCommands(hexCommands),
+  mApduResponseProvider(apduResponseProvider) {}
 
 }
 }
