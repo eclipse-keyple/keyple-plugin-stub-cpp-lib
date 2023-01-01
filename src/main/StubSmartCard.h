@@ -88,7 +88,7 @@ public:
          * implementing of ApduResponseProviderSpi.
          *
          * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
-         *     multiple apdu)
+         *        multiple apdu)
          * @return next step of builder
          * @since 2.1.0
          */
@@ -101,18 +101,6 @@ public:
          * @return new instance a StubSmartCard
          */
         virtual std::shared_ptr<StubSmartCard> build() = 0;
-
-        /**
-         * Provide simulated command/response to the StubSmartCard using a custom provider
-         * implementing of ApduResponseProviderSpi.
-         *
-         * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
-        *         multiple apdu)
-         * @return next step of builder
-         * @since 2.1.0
-         */
-        virtual BuildStep& withApduResponseProvider(
-            std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
     };
 
     class ProtocolStep {
