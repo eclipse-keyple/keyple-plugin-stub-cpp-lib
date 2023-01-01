@@ -64,7 +64,7 @@ public:
          * Build the StubSmartCard
          *
          * @return new instance a StubSmartCard
-         * @since 2.1.à
+         * @since 2.1.0
          */
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
@@ -101,6 +101,18 @@ public:
          * @return new instance a StubSmartCard
          */
         virtual std::shared_ptr<StubSmartCard> build() = 0;
+
+        /**
+         * Provide simulated command/response to the StubSmartCard using a custom provider
+         * implementing of ApduResponseProviderSpi.
+         *
+         * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
+        *         multiple apdu)
+         * @return next step of builder
+         * @since 2.1.0
+         */
+        virtual BuildStep& withApduResponseProvider(
+            std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
     };
 
     class ProtocolStep {
@@ -321,6 +333,7 @@ private:
      * @param powerOnData (non nullable) power-on data of the card
      * @param cardProtocol (non nullable) card protocol
      * @param hexCommands (non nullable) set of simulated commands
+     * @param apduResponseProvider (nullable) an external provider of simulated commands
      * @since 2.0.0
      */
     StubSmartCard(const std::vector<uint8_t>& powerOnData,

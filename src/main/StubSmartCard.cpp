@@ -67,6 +67,7 @@ StubSmartCard::CommandStep& StubSmartCard::Builder::withProtocol(const std::stri
 
 StubSmartCard::BuildStep& StubSmartCard::Builder::withApduResponseProvider(
     const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+    std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
 {
     mApduResponseProvider = apduResponseProvider;
 
