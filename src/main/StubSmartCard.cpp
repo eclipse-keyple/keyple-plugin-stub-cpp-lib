@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -66,6 +66,7 @@ StubSmartCard::CommandStep& StubSmartCard::Builder::withProtocol(const std::stri
 }
 
 StubSmartCard::BuildStep& StubSmartCard::Builder::withApduResponseProvider(
+    const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
     std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
 {
     mApduResponseProvider = apduResponseProvider;
@@ -109,7 +110,6 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
     /* Convert apduIn to hex */
     const std::string hexApdu = HexUtil::toHex(apduIn);
 
-
     if (mApduResponseProvider != nullptr) {
         const std::string responseFromRequest =
             mApduResponseProvider->getResponseFromRequest(hexApdu);
@@ -117,7 +117,7 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
             return HexUtil::toByteArray(responseFromRequest);
         }
 
-    } else  {
+    } else if (!mHexCommands.empty()) {
         /* Return matching hex response if the provided APDU matches the regex */
         for (const auto& hexCommand : mHexCommands) {
             std::unique_ptr<Pattern> p = Pattern::compile(hexCommand.first);
@@ -151,7 +151,7 @@ std::unique_ptr<StubSmartCard::PowerOnDataStep> StubSmartCard::builder()
 StubSmartCard::StubSmartCard(const std::vector<uint8_t>& powerOnData,
                              const std::string& cardProtocol,
                              const std::map<std::string, std::string>& hexCommands,
-                             std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+                             const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
 : mPowerOnData(powerOnData),
   mCardProtocol(cardProtocol),
   mIsPhysicalChannelOpen(false),

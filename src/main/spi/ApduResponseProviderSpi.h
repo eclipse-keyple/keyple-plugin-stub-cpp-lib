@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -14,21 +14,24 @@
 
 #include <string>
 
-/* Keyple Core Common */
-#include "KeyplePluginExtension.h"
-
 namespace keyple {
 namespace plugin {
 namespace stub {
+namespace spi {
 
 /**
  * This interface must be used to provide an APDU response according to an APDU request. It is used
- * by StubSmartCard to delegate it APDU response providing to another class. *
+ * by StubSmartCard} to delegate it APDU response providing to another class.
  *
  * @since 2.1.0
  */
 class ApduResponseProviderSpi {
 public:
+    /**
+     *
+     */
+    virtual ~ApduResponseProviderSpi() = default;
+
     /**
      * Provide APDU responses according to an APDU request.
      *
@@ -39,6 +42,7 @@ public:
     virtual const std::string getResponseFromRequest(const std::string& apduRequest) = 0;
 };
 
+}
 }
 }
 }

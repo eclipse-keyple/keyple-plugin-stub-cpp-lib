@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -14,6 +14,7 @@
 #include "gtest/gtest.h"
 
 /* Keyple Plugin Stub */
+#include "ApduResponseProviderSpi.h"
 #include "StubSmartCard.h"
 
 /* Keyple Core Util */
@@ -27,6 +28,7 @@ using namespace testing;
 using namespace keyple::core::plugin;
 using namespace keyple::core::util;
 using namespace keyple::plugin::stub;
+using namespace keyple::plugin::stub::spi;
 
 static std::shared_ptr<StubSmartCard> card;
 static const std::vector<uint8_t> powerOnData(1);
@@ -35,11 +37,11 @@ static const std::string commandHex = "1234567890ABCDEFFEDCBA0987654321";
 static const std::string commandHexRegexp = "1234.*";
 static const std::string responseHex = "response";
 
-class ApduResponseProviderSpiImpl : public ApduResponseProviderSpi {
+class ApduResponseProviderSpiMock : public ApduResponseProviderSpi {
 public:
     const std::string getResponseFromRequest(const std::string& apduRequest) override
     {
-        return apduRequest == commandHex ? responseHex : "";
+        return (apduRequest == commandHex) ? responseHex : "";
     }
 };
 
@@ -61,7 +63,7 @@ static void tearDown()
     card.reset();
 }
 
-TEST(StubSmartCardTest, sendApdu_adpuExists_sendResponse)
+TEST(StubSmartCardTest, sendApdu_apduExists_sendResponse)
 {
     setUp();
 
@@ -100,10 +102,10 @@ TEST(StubSmartCardTest, shouldUse_a_apduResponseProvider_to_sendResponse)
 {
     setUp();
 
+    const auto response = std::dynamic_pointer_cast<ApduResponseProviderSpiMock>(std::make_shared<ApduResponseProviderSpiMock>());
     card = StubSmartCard::builder()->withPowerOnData(powerOnData)
                                     .withProtocol(protocol)
-                                    .withApduResponseProvider(
-                                        std::make_shared<ApduResponseProviderSpiImpl>())
+                                    .withApduResponseProvider(response)
                                     .build();
     const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
 

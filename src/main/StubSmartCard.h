@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -25,6 +25,8 @@
 namespace keyple {
 namespace plugin {
 namespace stub {
+
+using namespace keyple::plugin::stub::spi;
 
 /**
  * Simulated smart card that can be inserted into a {@link StubReader}. Use the {@link Builder} to
@@ -62,6 +64,7 @@ public:
          * Build the StubSmartCard
          *
          * @return new instance a StubSmartCard
+         * @since 2.1.0
          */
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
@@ -79,6 +82,18 @@ public:
          */
         virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
                                                            const std::string& response) = 0;
+
+        /**
+         * Provide simulated command/response to the StubSmartCard using a custom provider
+         * implementing of ApduResponseProviderSpi.
+         *
+         * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
+         *     multiple apdu)
+         * @return next step of builder
+         * @since 2.1.0
+         */
+        virtual BuildStep& withApduResponseProvider(
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
 
         /**
          * Build the StubSmartCard
@@ -181,7 +196,7 @@ public:
          * @since 2.1.0
          */
         BuildStep& withApduResponseProvider(
-            std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) override;
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) override;
 
     private:
         /**
@@ -307,7 +322,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<ApduResponseProviderSpi> mApduResponseProvider;
+    const std::shared_ptr<ApduResponseProviderSpi> mApduResponseProvider;
 
     /**
      * (private) <br>
@@ -324,7 +339,7 @@ private:
     StubSmartCard(const std::vector<uint8_t>& powerOnData,
                   const std::string& cardProtocol,
                   const std::map<std::string, std::string>& hexCommands,
-                  std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
+                  const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
 };
 
 }

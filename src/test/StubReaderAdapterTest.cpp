@@ -1,5 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -91,7 +91,8 @@ TEST(StubReaderAdapterTest, insert_card_with_activated_protocol)
     ASSERT_EQ(adapter->isPhysicalChannelOpen(), card->isPhysicalChannelOpen());
     ASSERT_TRUE(adapter->checkCardPresence());
     ASSERT_TRUE(adapter->isCurrentProtocol(PROTOCOL));
-    ASSERT_EQ(adapter->transmitApdu(HexUtil::toByteArray(commandHex)), HexUtil::toByteArray(responseHex));
+    ASSERT_EQ(adapter->transmitApdu(HexUtil::toByteArray(commandHex)),
+                                    HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
