@@ -1,34 +1,29 @@
-/**************************************************************************************************
- * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
- *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
- *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
- **************************************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/    *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the MIT License which is available at                             *
+ * https://opensource.org/licenses/MIT.                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: MIT                                               *
+ ******************************************************************************/
+
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Plugin Stub */
-#include "ApduResponseProviderSpi.h"
-#include "StubSmartCard.h"
+#include "keyple/core/plugin/CardIOException.hpp"
+#include "keyple/core/util/HexUtil.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
+#include "keyple/plugin/stub/spi/ApduResponseProviderSpi.hpp"
 
-/* Keyple Core Util */
-#include "HexUtil.h"
-
-/* Keyple Core Plugin */
-#include "CardIOException.h"
-
-using namespace testing;
-
-using namespace keyple::core::plugin;
-using namespace keyple::core::util;
-using namespace keyple::plugin::stub;
-using namespace keyple::plugin::stub::spi;
+using keyple::core::plugin::CardIOException;
+using keyple::core::util::HexUtil;
+using keyple::plugin::stub::StubSmartCard;
+using keyple::plugin::stub::spi::ApduResponseProviderSpi;
 
 static std::shared_ptr<StubSmartCard> card;
 static const std::vector<uint8_t> powerOnData(1);
@@ -39,26 +34,31 @@ static const std::string responseHex = "response";
 
 class ApduResponseProviderSpiMock : public ApduResponseProviderSpi {
 public:
-    const std::string getResponseFromRequest(const std::string& apduRequest) override
+    const std::string
+    getResponseFromRequest(const std::string& apduRequest) override
     {
         return (apduRequest == commandHex) ? responseHex : "";
     }
 };
 
-static std::shared_ptr<StubSmartCard> buildACard()
+static std::shared_ptr<StubSmartCard>
+buildACard()
 {
-    return StubSmartCard::builder()->withPowerOnData(powerOnData)
-                                    .withProtocol(protocol)
-                                    .withSimulatedCommand(commandHex, responseHex)
-                                    .build();
+    return StubSmartCard::builder()
+        ->withPowerOnData(powerOnData)
+        .withProtocol(protocol)
+        .withSimulatedCommand(commandHex, responseHex)
+        .build();
 }
 
-static void setUp()
+static void
+setUp()
 {
     card = buildACard();
 }
 
-static void tearDown()
+static void
+tearDown()
 {
     card.reset();
 }
@@ -67,7 +67,8 @@ TEST(StubSmartCardTest, sendApdu_apduExists_sendResponse)
 {
     setUp();
 
-    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
+    const std::vector<uint8_t> apduResponse
+        = card->processApdu(HexUtil::toByteArray(commandHex));
 
     ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 
@@ -78,11 +79,13 @@ TEST(StubSmartCardTest, sendApdu_adpuRegexpExists_sendResponse)
 {
     setUp();
 
-    card = StubSmartCard::builder()->withPowerOnData(powerOnData)
-                                    .withProtocol(protocol)
-                                    .withSimulatedCommand(commandHexRegexp, responseHex)
-                                    .build();
-    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
+    card = StubSmartCard::builder()
+               ->withPowerOnData(powerOnData)
+               .withProtocol(protocol)
+               .withSimulatedCommand(commandHexRegexp, responseHex)
+               .build();
+    const std::vector<uint8_t> apduResponse
+        = card->processApdu(HexUtil::toByteArray(commandHex));
 
     ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 
@@ -93,7 +96,8 @@ TEST(StubSmartCardTest, sendApdu_adpuNotExists_sendException)
 {
     setUp();
 
-    EXPECT_THROW(card->processApdu(HexUtil::toByteArray("excp")), CardIOException);
+    EXPECT_THROW(
+        card->processApdu(HexUtil::toByteArray("excp")), CardIOException);
 
     tearDown();
 }
@@ -102,12 +106,16 @@ TEST(StubSmartCardTest, shouldUse_a_apduResponseProvider_to_sendResponse)
 {
     setUp();
 
-    const auto response = std::dynamic_pointer_cast<ApduResponseProviderSpiMock>(std::make_shared<ApduResponseProviderSpiMock>());
-    card = StubSmartCard::builder()->withPowerOnData(powerOnData)
-                                    .withProtocol(protocol)
-                                    .withApduResponseProvider(response)
-                                    .build();
-    const std::vector<uint8_t> apduResponse = card->processApdu(HexUtil::toByteArray(commandHex));
+    const auto response
+        = std::dynamic_pointer_cast<ApduResponseProviderSpiMock>(
+            std::make_shared<ApduResponseProviderSpiMock>());
+    card = StubSmartCard::builder()
+               ->withPowerOnData(powerOnData)
+               .withProtocol(protocol)
+               .withApduResponseProvider(response)
+               .build();
+    const std::vector<uint8_t> apduResponse
+        = card->processApdu(HexUtil::toByteArray(commandHex));
 
     ASSERT_EQ(apduResponse, HexUtil::toByteArray(responseHex));
 

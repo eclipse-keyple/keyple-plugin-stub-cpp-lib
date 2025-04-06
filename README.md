@@ -19,4 +19,3 @@ Examples of implementation are available in the following repository: [github.co
 ## About the source code
 
 The code is built with **CLang / GCC / MSVC** in order to address a wide range of applications.
-
