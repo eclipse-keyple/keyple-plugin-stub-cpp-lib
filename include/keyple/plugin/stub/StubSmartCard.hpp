@@ -1,14 +1,12 @@
-/**************************************************************************************************
- * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
- *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
- *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
- **************************************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/    *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the MIT License which is available at                             *
+ * https://opensource.org/licenses/MIT.                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: MIT                                               *
+ ******************************************************************************/
 
 #pragma once
 
@@ -18,37 +16,44 @@
 #include <string>
 #include <vector>
 
-/* Keyple Plugin Stub */
-#include "ApduResponseProviderSpi.h"
-#include "KeyplePluginStubExport.h"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/spi/ApduResponseProviderSpi.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::plugin::stub::spi;
+using keyple::plugin::stub::spi::ApduResponseProviderSpi;
 
 /**
- * Simulated smart card that can be inserted into a {@link StubReader}. Use the {@link Builder} to
- * create this object
+ * Simulated smart card that can be inserted into a {@link StubReader}. Use the
+ * {@link Builder} to create this object
  *
  * @since 2.0.0
  */
 class KEYPLEPLUGINSTUB_API StubSmartCard {
 public:
+    /**
+     * Provides methods to add simulated commands and responses to a
+     * StubSmartCard builder.
+     *
+     * @since 2.1.0
+     */
     class SimulatedCommandStep {
     public:
         /**
          * Add simulated command/response to the StubSmartCard to build. Command and response
          * should be hexadecimal.
          *
-         * @param command hexadecimal command to respond to (can be a regexp to match multiple apdu)
+         * @param command hexadecimal command to respond to (can be a regexp to
+         * match multiple apdu)
          * @param response hexadecimal response
          * @return next step of builder
          * @since 2.1.0
          */
-        virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
-                                                           const std::string& response) = 0;
+        virtual SimulatedCommandStep& withSimulatedCommand(
+            const std::string& command, const std::string& response)
+            = 0;
 
         /**
          * Build the StubSmartCard
@@ -58,6 +63,11 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * Build step for creating a {@link StubSmartCard} instance.
+     *
+     * @since 2.1.0
+     */
     class BuildStep {
     public:
         /**
@@ -69,31 +79,40 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * CommandStep interface provides methods to build and configure a
+     * StubSmartCard object.
+     *
+     * @since 2.0.0
+     */
     class CommandStep {
     public:
         /**
          * Add simulated command/response to the StubSmartCard to build. Command and
          * response should be hexadecimal.
          *
-         * @param command hexadecimal command to respond to (can be a regexp to match multiple apdu)
+         * @param command hexadecimal command to respond to (can be a regexp to
+         * match multiple apdu)
          * @param response hexadecimal response
          * @return next step of builder
          * @since 2.0.0
          */
-        virtual SimulatedCommandStep& withSimulatedCommand(const std::string& command,
-                                                           const std::string& response) = 0;
+        virtual SimulatedCommandStep& withSimulatedCommand(
+            const std::string& command, const std::string& response)
+            = 0;
 
         /**
          * Provide simulated command/response to the StubSmartCard using a custom provider
          * implementing of ApduResponseProviderSpi.
          *
-         * @param apduResponseProvider hexadecimal command to respond to (can be a regexp to match
-         *        multiple apdu)
+         * @param apduResponseProvider hexadecimal command to respond to (can be
+         * a regexp to match multiple apdu)
          * @return next step of builder
          * @since 2.1.0
          */
         virtual BuildStep& withApduResponseProvider(
-            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) = 0;
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+            = 0;
 
         /**
          * Build the StubSmartCard
@@ -103,6 +122,12 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * Provides a method to define the simulated protocol for the StubSmartCard
+     * to build.
+     *
+     * @since 2.0.0
+     */
     class ProtocolStep {
     public:
         /**
@@ -115,6 +140,12 @@ public:
         virtual CommandStep& withProtocol(const std::string& protocol) = 0;
     };
 
+    /**
+     * Provides a method for defining simulated power-on data for the
+     * StubSmartCard to build.
+     *
+     * @since 2.0.0
+     */
     class PowerOnDataStep {
     public:
         /**
@@ -129,7 +160,9 @@ public:
          * @return next step of builder
          * @since 2.0.0
          */
-        virtual ProtocolStep& withPowerOnData(const std::vector<uint8_t>& powerOnData) = 0;
+        virtual ProtocolStep&
+        withPowerOnData(const std::vector<uint8_t>& powerOnData)
+            = 0;
     };
 
     /**
@@ -137,12 +170,11 @@ public:
      *
      * @since 2.0.0
      */
-    class Builder
-    : public PowerOnDataStep,
-      public ProtocolStep,
-      public CommandStep,
-      public BuildStep,
-      public SimulatedCommandStep {
+    class Builder : public PowerOnDataStep,
+                    public ProtocolStep,
+                    public CommandStep,
+                    public BuildStep,
+                    public SimulatedCommandStep {
     public:
         /**
          *
@@ -154,8 +186,8 @@ public:
          *
          * @since 2.0.0
          */
-        SimulatedCommandStep& withSimulatedCommand(const std::string& command,
-                                                   const std::string& response) override;
+        SimulatedCommandStep& withSimulatedCommand(
+            const std::string& command, const std::string& response) override;
 
         /**
          * {@inheritDoc}
@@ -169,7 +201,8 @@ public:
          *
          * @since 2.0.0
          */
-        ProtocolStep& withPowerOnData(const std::vector<uint8_t>& powerOnData) override;
+        ProtocolStep&
+        withPowerOnData(const std::vector<uint8_t>& powerOnData) override;
 
         /**
          * {@inheritDoc}
@@ -184,7 +217,8 @@ public:
          * @since 2.1.0
          */
         BuildStep& withApduResponseProvider(
-            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider) override;
+            const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+            override;
 
     private:
         /**
@@ -276,7 +310,8 @@ public:
      *
      * @since 2.0.0
      */
-    friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<StubSmartCard> ssc);
+    friend std::ostream&
+    operator<<(std::ostream& os, const std::shared_ptr<StubSmartCard> ssc);
 
     /**
      * Creates a builder for the {@link StubSmartCard}
@@ -314,22 +349,25 @@ private:
 
     /**
      * (private) <br>
-     * Create a simulated smart card with mandatory parameters The response APDU can be provided
+     * Create a simulated smart card with mandatory parameters The response APDU
+     * can be provided
      * using <code>apduResponseProvider</code> if it is not null or <code>hexCommands</code> by
      * default.
      *
      * @param powerOnData (non nullable) power-on data of the card
      * @param cardProtocol (non nullable) card protocol
      * @param hexCommands (non nullable) set of simulated commands
-     * @param apduResponseProvider (nullable) an external provider of simulated commands
+     * @param apduResponseProvider (nullable) an external provider of simulated
+     * commands
      * @since 2.0.0
      */
-    StubSmartCard(const std::vector<uint8_t>& powerOnData,
-                  const std::string& cardProtocol,
-                  const std::map<std::string, std::string>& hexCommands,
-                  const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
+    StubSmartCard(
+        const std::vector<uint8_t>& powerOnData,
+        const std::string& cardProtocol,
+        const std::map<std::string, std::string>& hexCommands,
+        const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

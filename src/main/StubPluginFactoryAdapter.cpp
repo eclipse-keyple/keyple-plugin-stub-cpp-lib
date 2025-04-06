@@ -1,86 +1,96 @@
-/**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
- *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
- *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
- **************************************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/    *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the MIT License which is available at                             *
+ * https://opensource.org/licenses/MIT.                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: MIT                                               *
+ ******************************************************************************/
 
-#include "StubPluginFactoryAdapter.h"
+#include "keyple/plugin/stub/StubPluginFactoryAdapter.hpp"
 
-/* Keyple Core Plugin */
-#include "PluginApiProperties.h"
-
-/* Keyple Core Common */
-#include "CommonApiProperties.h"
-
-/* Keyple Plugin Stub */
-#include "StubPluginAdapter.h"
+#include "keyple/core/common/CommonApiProperties.hpp"
+#include "keyple/core/plugin/PluginApiProperties.hpp"
+#include "keyple/plugin/stub/StubPluginAdapter.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::common;
-using namespace keyple::core::plugin;
+using keyple::core::common::CommonApiProperties_VERSION;
+using keyple::core::plugin::PluginApiProperties_VERSION;
 
-/* STUB READER CONFIGURATION -------------------------------------------------------------------- */
+/* STUB READER CONFIGURATION
+ * -------------------------------------------------------------------- */
 
 StubPluginFactoryAdapter::StubReaderConfiguration::StubReaderConfiguration(
-  const std::string& name, const bool isContactless,  std::shared_ptr<StubSmartCard> card)
-: mName(name), mIsContactless(isContactless), mCard(card) {}
+    const std::string& name,
+    const bool isContactless,
+    std::shared_ptr<StubSmartCard> card)
+: mName(name)
+, mIsContactless(isContactless)
+, mCard(card)
+{
+}
 
-const std::string& StubPluginFactoryAdapter::StubReaderConfiguration::getName() const
+const std::string&
+StubPluginFactoryAdapter::StubReaderConfiguration::getName() const
 {
     return mName;
 }
 
-bool StubPluginFactoryAdapter::StubReaderConfiguration::getContactless() const
+bool
+StubPluginFactoryAdapter::StubReaderConfiguration::getContactless() const
 {
     return mIsContactless;
 }
 
-std::shared_ptr<StubSmartCard> StubPluginFactoryAdapter::StubReaderConfiguration::getCard() const
+std::shared_ptr<StubSmartCard>
+StubPluginFactoryAdapter::StubReaderConfiguration::getCard() const
 {
     return mCard;
 }
 
-/* STUB PLUGIN FACTORY ADAPTER ------------------------------------------------------------------ */
+/* STUB PLUGIN FACTORY ADAPTER
+ * ------------------------------------------------------------------ */
 
 StubPluginFactoryAdapter::StubPluginFactoryAdapter(
-  const std::string& pluginName,
-  const std::vector<std::shared_ptr<StubReaderConfiguration>> readerConfigurations,
-  const int monitoringCycleDuration)
-: mReaderConfigurations(readerConfigurations),
-  mMonitoringCycleDuration(monitoringCycleDuration),
-  mPluginName(pluginName) {}
+    const std::string& pluginName,
+    const std::vector<std::shared_ptr<StubReaderConfiguration>>&
+        readerConfigurations,
+    const int monitoringCycleDuration)
+: mReaderConfigurations(readerConfigurations)
+, mMonitoringCycleDuration(monitoringCycleDuration)
+, mPluginName(pluginName)
+{
+}
 
-const std::string& StubPluginFactoryAdapter::getPluginApiVersion() const
+const std::string
+StubPluginFactoryAdapter::getPluginApiVersion() const
 {
     return PluginApiProperties_VERSION;
 }
 
-const std::string& StubPluginFactoryAdapter::getCommonApiVersion() const
+const std::string
+StubPluginFactoryAdapter::getCommonApiVersion() const
 {
     return CommonApiProperties_VERSION;
 }
 
-const std::string& StubPluginFactoryAdapter::getPluginName() const
+const std::string&
+StubPluginFactoryAdapter::getPluginName() const
 {
     return mPluginName;
 }
 
-std::shared_ptr<PluginSpi> StubPluginFactoryAdapter::getPlugin()
+std::shared_ptr<PluginSpi>
+StubPluginFactoryAdapter::getPlugin()
 {
-    return std::make_shared<StubPluginAdapter>(mPluginName,
-                                               mReaderConfigurations,
-                                               mMonitoringCycleDuration);
+    return std::make_shared<StubPluginAdapter>(
+        mPluginName, mReaderConfigurations, mMonitoringCycleDuration);
 }
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

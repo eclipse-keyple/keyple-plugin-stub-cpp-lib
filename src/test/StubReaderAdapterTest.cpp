@@ -1,35 +1,31 @@
-/**************************************************************************************************
- * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
- *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
- *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
- **************************************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/    *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the MIT License which is available at                             *
+ * https://opensource.org/licenses/MIT.                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: MIT                                               *
+ ******************************************************************************/
+
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Plugin Stub */
-#include "StubReaderAdapter.h"
-#include "StubSmartCard.h"
+#include "keyple/core/plugin/CardIOException.hpp"
+#include "keyple/core/util/HexUtil.hpp"
+#include "keyple/core/util/cpp/exception/IllegalArgumentException.hpp"
+#include "keyple/plugin/stub/StubReaderAdapter.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
-/* Keyple Core Plugin */
-#include "CardIOException.h"
-
-/* Keyple Core Util */
-#include "HexUtil.h"
-#include "IllegalArgumentException.h"
-
-using namespace testing;
-
-using namespace keyple::core::plugin;
-using namespace keyple::core::util;
-using namespace keyple::core::util::cpp::exception;
-using namespace keyple::plugin::stub;
+using keyple::core::plugin::CardIOException;
+using keyple::core::util::HexUtil;
+using keyple::core::util::cpp::exception::IllegalArgumentException;
+using keyple::plugin::stub::StubReaderAdapter;
+using keyple::plugin::stub::StubSmartCard;
 
 static std::shared_ptr<StubReaderAdapter> adapter;
 static std::shared_ptr<StubSmartCard> card;
@@ -39,21 +35,26 @@ static bool IS_CONTACT_LESS = true;
 static const std::string commandHex = "1234567890ABCDEFFEDCBA0987654321";
 static const std::string responseHex = "response";
 
-static std::shared_ptr<StubSmartCard> buildCard(const std::string& protocol)
+static std::shared_ptr<StubSmartCard>
+buildCard(const std::string& protocol)
 {
-    return StubSmartCard::builder()->withPowerOnData(HexUtil::toByteArray("0000"))
-                                    .withProtocol(protocol)
-                                    .withSimulatedCommand(commandHex, responseHex)
-                                    .build();
+    return StubSmartCard::builder()
+        ->withPowerOnData(HexUtil::toByteArray("0000"))
+        .withProtocol(protocol)
+        .withSimulatedCommand(commandHex, responseHex)
+        .build();
 }
 
-static void setUp()
+static void
+setUp()
 {
     card = buildCard(PROTOCOL);
-    adapter = std::make_shared<StubReaderAdapter>(NAME, IS_CONTACT_LESS, nullptr);
+    adapter
+        = std::make_shared<StubReaderAdapter>(NAME, IS_CONTACT_LESS, nullptr);
 }
 
-static void tearDown()
+static void
+tearDown()
 {
     adapter.reset();
     card.reset();
@@ -87,12 +88,14 @@ TEST(StubReaderAdapterTest, insert_card_with_activated_protocol)
     adapter->insertCard(card);
 
     ASSERT_EQ(adapter->getSmartcard(), card);
-    ASSERT_EQ(adapter->getPowerOnData(), HexUtil::toHex(card->getPowerOnData()));
+    ASSERT_EQ(
+        adapter->getPowerOnData(), HexUtil::toHex(card->getPowerOnData()));
     ASSERT_EQ(adapter->isPhysicalChannelOpen(), card->isPhysicalChannelOpen());
     ASSERT_TRUE(adapter->checkCardPresence());
     ASSERT_TRUE(adapter->isCurrentProtocol(PROTOCOL));
-    ASSERT_EQ(adapter->transmitApdu(HexUtil::toByteArray(commandHex)),
-                                    HexUtil::toByteArray(responseHex));
+    ASSERT_EQ(
+        adapter->transmitApdu(HexUtil::toByteArray(commandHex)),
+        HexUtil::toByteArray(responseHex));
 
     tearDown();
 }
@@ -166,7 +169,9 @@ TEST(StubReaderAdapterTest, op_without_card)
 
     ASSERT_FALSE(adapter->isCurrentProtocol("any"));
 
-    EXPECT_THROW(adapter->transmitApdu(HexUtil::toByteArray(commandHex)), CardIOException);
+    EXPECT_THROW(
+        adapter->transmitApdu(HexUtil::toByteArray(commandHex)),
+        CardIOException);
 
     tearDown();
 }

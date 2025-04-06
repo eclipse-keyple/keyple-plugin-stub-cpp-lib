@@ -1,20 +1,24 @@
-#/*************************************************************************************************
-# * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                       *
-# *                                                                                               *
-# * See the NOTICE file(s) distributed with this work for additional information regarding        *
-# * copyright ownership.                                                                          *
-# *                                                                                               *
-# * This program and the accompanying materials are made available under the terms of the Eclipse *
-# * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                 *
-# *                                                                                               *
-# * SPDX-License-Identifier: EPL-2.0                                                              *
-# *************************************************************************************************/
+# *****************************************************************************
+# Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/     *
+#                                                                             *
+# This program and the accompanying materials are made available under the    *
+# terms of the MIT License which is available at                              *
+# https://opensource.org/licenses/MIT.                                        *
+#                                                                             *
+# SPDX-License-Identifier: MIT                                                *
+# *****************************************************************************/
 
 SET(LIBRARY_NAME keyplepluginstubcpplib)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKEYPLEPLUGINSTUB_EXPORT")
 
+# Include deps
+INCLUDE("CMakeLists.txt.keyple-common")
+INCLUDE("CMakeLists.txt.keyple-plugin")
+INCLUDE("CMakeLists.txt.keypop-reader")
+
 ADD_LIBRARY(
+
     ${LIBRARY_NAME}
 
     ${LIBRARY_TYPE}
@@ -30,16 +34,14 @@ ADD_LIBRARY(
 )
 
 TARGET_INCLUDE_DIRECTORIES(
+
     ${LIBRARY_NAME}
 
     PUBLIC
 
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    spi
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
-# Careful, link order matters here as there are includes with the same name, and we cannot
-# discriminate based on path
 TARGET_LINK_LIBRARIES(
 
     ${LIBRARY_NAME}
@@ -47,8 +49,16 @@ TARGET_LINK_LIBRARIES(
     PUBLIC
 
     Keyple::Util
-    Keyple::CommonApi
-    Keyple::PluginApi
+    Keyple::Common
+    Keyple::Plugin
+    Keypop::Reader
 )
 
-ADD_LIBRARY(Keyple::PluginStub ALIAS ${LIBRARY_NAME})
+ADD_LIBRARY(
+
+    Keyple::Plugin::Stub
+
+    ALIAS
+
+    ${LIBRARY_NAME}
+)
