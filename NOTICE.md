@@ -33,4 +33,3 @@ SPDX-License-Identifier: EPL-2.0
 ## Third-party Content
 
 No third party
-
