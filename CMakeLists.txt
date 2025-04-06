@@ -1,21 +1,21 @@
-# *************************************************************************************************
-# Copyright (c) 2023 Calypso Networks Association https://calypsonet.org/                         *
-#                                                                                                 *
-# See the NOTICE file(s) distributed with this work for additional information regarding          *
-# copyright ownership.                                                                            *
-#                                                                                                 *
-# This program and the accompanying materials are made available under the terms of the Eclipse   *
-# Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                   *
-#                                                                                                 *
-# SPDX-License-Identifier: EPL-2.0                                                                *
-# *************************************************************************************************/
+# *****************************************************************************
+# Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/     *
+#                                                                             *
+# This program and the accompanying materials are made available under the    *
+# terms of the MIT License which is available at                              *
+# https://opensource.org/licenses/MIT.                                        *
+#                                                                             *
+# SPDX-License-Identifier: MIT                                                *
+# *****************************************************************************/
 
-PROJECT(KeyplePluginStubCppLib C CXX)
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+PROJECT(KeyplePluginStubCppLib
+        VERSION 2.2.1
+        LANGUAGES C CXX)
 
 SET(CMAKE_PROJECT_VERSION_MAJOR "2")
-SET(CMAKE_PROJECT_VERSION_MINOR "1")
-SET(CMAKE_PROJECT_VERSION_PATCH "2")
+SET(CMAKE_PROJECT_VERSION_MINOR "2")
+SET(CMAKE_PROJECT_VERSION_PATCH "1")
 
 SET(CMAKE_PROJECT_VERSION "${CMAKE_PROJECT_VERSION_MAJOR}.
                            ${CMAKE_PROJECT_VERSION_MINOR}.
@@ -42,9 +42,3 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Add projects
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-# Dependencies (for later use):
-#
-# keyple-common-cpp-api:2.0.0
-# keyple-plugin-cpp-api:2.0.0
-# keyple-util-cpp-lib:2.1.0

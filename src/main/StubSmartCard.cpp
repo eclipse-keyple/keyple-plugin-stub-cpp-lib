@@ -1,38 +1,36 @@
-/**************************************************************************************************
- * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
- *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
- *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
- **************************************************************************************************/
+/******************************************************************************
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/    *
+ *                                                                            *
+ * This program and the accompanying materials are made available under the   *
+ * terms of the MIT License which is available at                             *
+ * https://opensource.org/licenses/MIT.                                       *
+ *                                                                            *
+ * SPDX-License-Identifier: MIT                                               *
+ ******************************************************************************/
 
-#include "StubSmartCard.h"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
-/* Keyple Core Util */
-#include "HexUtil.h"
-#include "KeypleStd.h"
-#include "Pattern.h"
-
-/* Keyple Core Plugin */
-#include "CardIOException.h"
+#include "keyple/core/plugin/CardIOException.hpp"
+#include "keyple/core/util/HexUtil.hpp"
+#include "keyple/core/util/cpp/KeypleStd.hpp"
+#include "keyple/core/util/cpp/Pattern.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::plugin;
-using namespace keyple::core::util;
-using namespace keyple::core::util::cpp;
+using keyple::core::plugin::CardIOException;
+using keyple::core::util::HexUtil;
+using keyple::core::util::cpp::Pattern;
 
-/* BUILDER -------------------------------------------------------------------------------------- */
+/* BUILDER ------------------------------------------------------------------ */
 
-StubSmartCard::Builder::Builder() {}
+StubSmartCard::Builder::Builder()
+{
+}
 
-StubSmartCard::SimulatedCommandStep& StubSmartCard::Builder::withSimulatedCommand(
+StubSmartCard::SimulatedCommandStep&
+StubSmartCard::Builder::withSimulatedCommand(
     const std::string& command, const std::string& response)
 {
     /* Add commands without space */
@@ -44,28 +42,31 @@ StubSmartCard::SimulatedCommandStep& StubSmartCard::Builder::withSimulatedComman
     return *this;
 }
 
-std::shared_ptr<StubSmartCard> StubSmartCard::Builder::build()
+std::shared_ptr<StubSmartCard>
+StubSmartCard::Builder::build()
 {
-    return std::shared_ptr<StubSmartCard>(
-               new StubSmartCard(mPowerOnData, mCardProtocol, mHexCommands, mApduResponseProvider));
+    return std::shared_ptr<StubSmartCard>(new StubSmartCard(
+        mPowerOnData, mCardProtocol, mHexCommands, mApduResponseProvider));
 }
 
-StubSmartCard::ProtocolStep& StubSmartCard::Builder::withPowerOnData(
-    const std::vector<uint8_t>& powerOnData)
+StubSmartCard::ProtocolStep&
+StubSmartCard::Builder::withPowerOnData(const std::vector<uint8_t>& powerOnData)
 {
     mPowerOnData = powerOnData;
 
     return *this;
 }
 
-StubSmartCard::CommandStep& StubSmartCard::Builder::withProtocol(const std::string& protocol)
+StubSmartCard::CommandStep&
+StubSmartCard::Builder::withProtocol(const std::string& protocol)
 {
     mCardProtocol = protocol;
 
     return *this;
 }
 
-StubSmartCard::BuildStep& StubSmartCard::Builder::withApduResponseProvider(
+StubSmartCard::BuildStep&
+StubSmartCard::Builder::withApduResponseProvider(
     const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
 {
     mApduResponseProvider = apduResponseProvider;
@@ -73,34 +74,40 @@ StubSmartCard::BuildStep& StubSmartCard::Builder::withApduResponseProvider(
     return *this;
 }
 
-/* STUB SMARTCARD ------------------------------------------------------------------------------- */
+/* STUB SMARTCARD ----------------------------------------------------------- */
 
-const std::string& StubSmartCard::getCardProtocol() const
+const std::string&
+StubSmartCard::getCardProtocol() const
 {
     return mCardProtocol;
 }
 
-const std::vector<uint8_t>& StubSmartCard::getPowerOnData() const
+const std::vector<uint8_t>&
+StubSmartCard::getPowerOnData() const
 {
     return mPowerOnData;
 }
 
-bool StubSmartCard::isPhysicalChannelOpen() const
+bool
+StubSmartCard::isPhysicalChannelOpen() const
 {
     return mIsPhysicalChannelOpen;
 }
 
-void StubSmartCard::openPhysicalChannel()
+void
+StubSmartCard::openPhysicalChannel()
 {
     mIsPhysicalChannelOpen = true;
 }
 
-void StubSmartCard::closePhysicalChannel()
+void
+StubSmartCard::closePhysicalChannel()
 {
     mIsPhysicalChannelOpen = false;
 }
 
-const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>& apduIn)
+const std::vector<uint8_t>
+StubSmartCard::processApdu(const std::vector<uint8_t>& apduIn)
 {
     if (apduIn.size() == 0) {
         return std::vector<uint8_t>();
@@ -110,16 +117,17 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
     const std::string hexApdu = HexUtil::toHex(apduIn);
 
     if (mApduResponseProvider != nullptr) {
-        const std::string responseFromRequest =
-            mApduResponseProvider->getResponseFromRequest(hexApdu);
+        const std::string responseFromRequest
+            = mApduResponseProvider->getResponseFromRequest(hexApdu);
         if (responseFromRequest != "") {
             return HexUtil::toByteArray(responseFromRequest);
         }
 
     } else if (!mHexCommands.empty()) {
-        /* Return matching hex response if the provided APDU matches the regex */
+        /* Return matching hex response if the provided APDU matches the regex
+         */
         for (const auto& hexCommand : mHexCommands) {
-            std::unique_ptr<Pattern> p = Pattern::compile(hexCommand.first);
+            std::shared_ptr<Pattern> p = Pattern::compile(hexCommand.first);
             if (p->matcher(hexApdu)->matches()) {
                 return HexUtil::toByteArray(hexCommand.second);
             }
@@ -130,33 +138,37 @@ const std::vector<uint8_t> StubSmartCard::processApdu(const std::vector<uint8_t>
     throw CardIOException("No response available for this request: " + hexApdu);
 }
 
-std::ostream& operator<<(std::ostream& os, const std::shared_ptr<StubSmartCard> ssc)
+std::ostream&
+operator<<(std::ostream& os, const std::shared_ptr<StubSmartCard> ssc)
 {
     os << "STUB_SMART_CARD: {"
        << "POWER_ON_DATA = " << HexUtil::toHex(ssc->mPowerOnData) << ", "
        << "CARD_PROTOCOL = " << ssc->mCardProtocol << ", "
        << "IS_PHYSICAL_CHANNEL_OPEN = " << ssc->mIsPhysicalChannelOpen << ", "
-       << "HEX_COMMANDS(#) = " << ssc->mHexCommands.size()
-       << "}";
+       << "HEX_COMMANDS(#) = " << ssc->mHexCommands.size() << "}";
 
-    return  os;
+    return os;
 }
 
-std::unique_ptr<StubSmartCard::PowerOnDataStep> StubSmartCard::builder()
+std::unique_ptr<StubSmartCard::PowerOnDataStep>
+StubSmartCard::builder()
 {
     return std::unique_ptr<Builder>(new Builder());
 }
 
-StubSmartCard::StubSmartCard(const std::vector<uint8_t>& powerOnData,
-                             const std::string& cardProtocol,
-                             const std::map<std::string, std::string>& hexCommands,
-                             const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
-: mPowerOnData(powerOnData),
-  mCardProtocol(cardProtocol),
-  mIsPhysicalChannelOpen(false),
-  mHexCommands(hexCommands),
-  mApduResponseProvider(apduResponseProvider) {}
+StubSmartCard::StubSmartCard(
+    const std::vector<uint8_t>& powerOnData,
+    const std::string& cardProtocol,
+    const std::map<std::string, std::string>& hexCommands,
+    const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider)
+: mPowerOnData(powerOnData)
+, mCardProtocol(cardProtocol)
+, mIsPhysicalChannelOpen(false)
+, mHexCommands(hexCommands)
+, mApduResponseProvider(apduResponseProvider)
+{
+}
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */
