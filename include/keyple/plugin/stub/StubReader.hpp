@@ -1,13 +1,10 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
@@ -15,17 +12,14 @@
 #include <memory>
 #include <string>
 
-/* Keyple Core Common */
-#include "KeypleReaderExtension.h"
-
-/* Keyple Plugin Stub */
-#include "StubSmartCard.h"
+#include "keyple/core/common/KeypleReaderExtension.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::common;
+using keyple::core::common::KeypleReaderExtension;
 
 /**
  * The Stub Reader supports programmatically the insertion and removal of {@link StubSmartCard} <br>
@@ -62,6 +56,6 @@ public:
     virtual std::shared_ptr<StubSmartCard> getSmartcard() = 0;
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

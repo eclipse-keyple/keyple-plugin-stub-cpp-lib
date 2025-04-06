@@ -1,40 +1,39 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
+
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Plugin Stub */
-#include "StubPluginAdapter.h"
-#include "StubPluginFactoryAdapter.h"
-#include "StubPoolPluginAdapter.h"
-#include "StubSmartCard.h"
+#include "keyple/core/plugin/PluginApiProperties.hpp"
+#include "keyple/core/plugin/PluginIOException.hpp"
+#include "keyple/core/plugin/spi/reader/ReaderSpi.hpp"
+#include "keyple/core/util/cpp/Arrays.hpp"
+#include "keyple/plugin/stub/StubPluginAdapter.hpp"
+#include "keyple/plugin/stub/StubPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubPoolPluginAdapter.hpp"
+#include "keyple/plugin/stub/StubPoolPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
-/* Keyple Core Plugin */
-#include "PluginApiProperties.h"
-#include "PluginIOException.h"
-
-/* Keyple Core Common */
-#include "CommonApiProperties.h"
-
-/* Keyple Core Util */
-#include "Arrays.h"
-
-using namespace testing;
-
-using namespace keyple::core::common;
-using namespace keyple::core::plugin;
-using namespace keyple::core::util::cpp;
-using namespace keyple::plugin::stub;
+using keyple::core::plugin::PluginApiProperties_VERSION;
+using keyple::core::plugin::PluginIOException;
+using keyple::core::plugin::spi::reader::ReaderSpi;
+using keyple::core::util::cpp::Arrays;
+using keyple::plugin::stub::StubPluginAdapter;
+using keyple::plugin::stub::StubPluginFactoryAdapter;
+using keyple::plugin::stub::StubPoolPluginAdapter;
+using keyple::plugin::stub::StubPoolPluginFactoryAdapter;
+using keyple::plugin::stub::StubSmartCard;
 
 using StubPoolReaderConfiguration = StubPoolPluginFactoryAdapter::StubPoolReaderConfiguration;
 
@@ -50,33 +49,42 @@ static const std::string protocol = "protocol";
 static const std::string commandHex = "1234567890ABCDEFFEDCBA0987654321";
 static const std::string responseHex = "response";
 
-static std::shared_ptr<StubSmartCard> buildACard()
+static std::shared_ptr<StubSmartCard>
+buildACard()
 {
-    return StubSmartCard::builder()->withPowerOnData(powerOnData)
-                                    .withProtocol(protocol)
-                                    .withSimulatedCommand(commandHex, responseHex)
-                                    .build();
+    return StubSmartCard::builder()
+        ->withPowerOnData(powerOnData)
+        .withProtocol(protocol)
+        .withSimulatedCommand(commandHex, responseHex)
+        .build();
 }
 
-static void setUp()
+static void
+setUp()
 {
-    pluginPoolAdapter = std::make_shared<StubPoolPluginAdapter>(READER_NAME, readerConfigurations, 0);
+    pluginPoolAdapter
+        = std::make_shared<StubPoolPluginAdapter>(READER_NAME, readerConfigurations, 0);
     card = buildACard();
 }
 
-static void tearDown()
+static void
+tearDown()
 {
     card.reset();
     pluginPoolAdapter.reset();
     readerConfigurations.clear();
 }
 
-static void __initPlugin_withMultipleReader()
+static void
+__initPlugin_withMultipleReader()
 {
-    readerConfigurations.push_back(std::make_shared<StubPoolReaderConfiguration>(group1, READER_NAME, card));
-    readerConfigurations.push_back(std::make_shared<StubPoolReaderConfiguration>(group1, READER_NAME_2, card));
+    readerConfigurations.push_back(
+        std::make_shared<StubPoolReaderConfiguration>(group1, READER_NAME, card));
+    readerConfigurations.push_back(
+        std::make_shared<StubPoolReaderConfiguration>(group1, READER_NAME_2, card));
 
-    pluginPoolAdapter = std::make_shared<StubPoolPluginAdapter>(READER_NAME, readerConfigurations, 0);
+    pluginPoolAdapter
+        = std::make_shared<StubPoolPluginAdapter>(READER_NAME, readerConfigurations, 0);
 
     ASSERT_EQ(pluginPoolAdapter->searchAvailableReaders().size(), 2);
     ASSERT_FALSE(pluginPoolAdapter->searchReader(READER_NAME)->isContactless());
@@ -91,7 +99,8 @@ TEST(StubPoolPluginAdapterTest, initPlugin_withMultipleReader)
     tearDown();
 }
 
-static void __plugReader_should_create_reader()
+static void
+__plugReader_should_create_reader()
 {
     pluginPoolAdapter->plugPoolReader(group1, READER_NAME, card);
 
@@ -121,7 +130,8 @@ TEST(StubPoolPluginAdapterTest, allocate_reader_without_group)
     tearDown();
 }
 
-static void __allocate_reader_with_group()
+static void
+__allocate_reader_with_group()
 {
     __plugReader_should_create_reader();
 

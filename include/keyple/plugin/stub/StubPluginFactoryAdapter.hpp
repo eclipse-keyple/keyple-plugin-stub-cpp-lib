@@ -1,30 +1,26 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
 
-/* Keyple Core Plugin */
-#include "PluginFactorySpi.h"
-
-/* Keyple Plugin Stub */
-#include "KeyplePluginStubExport.h"
-#include "StubPluginFactory.h"
-#include "StubSmartCard.h"
+#include "keyple/core/plugin/spi/PluginFactorySpi.hpp"
+#include "keyple/core/plugin/spi/PluginSpi.hpp"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/StubPluginFactory.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::plugin::spi;
+using keyple::core::plugin::spi::PluginFactorySpi;
+using keyple::core::plugin::spi::PluginSpi;
 
 /**
  * (package-private)<br>
@@ -32,7 +28,8 @@ using namespace keyple::core::plugin::spi;
  *
  * @since 2.0.0
  */
-class KEYPLEPLUGINSTUB_API StubPluginFactoryAdapter final : public StubPluginFactory, public PluginFactorySpi {
+class KEYPLEPLUGINSTUB_API StubPluginFactoryAdapter final
+: public StubPluginFactory, public PluginFactorySpi {
 public:
     /**
      * (package-private)
@@ -118,14 +115,14 @@ public:
      *
      * @since 2.0.0
      */
-    const std::string& getPluginApiVersion() const override;
+    const std::string getPluginApiVersion() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    const std::string& getCommonApiVersion() const override;
+    const std::string getCommonApiVersion() const override;
 
     /**
      * {@inheritDoc}
@@ -158,6 +155,6 @@ private:
     const std::string mPluginName;
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

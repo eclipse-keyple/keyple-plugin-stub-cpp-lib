@@ -11,30 +11,29 @@
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
 INCLUDE(FetchContent)
 
-IF(NOT EXISTS "${CMAKE_BINARY_DIR}/_deps/googletest-src")
+IF(NOT EXISTS "${CMAKE_BINARY_DIR}/_deps/keypopreadercppapi-src")
 
-    MESSAGE("-- > Fetching GTest from keyple plugin stub")
+    MESSAGE("-- > Fetching keypop reader from keyple plugin stub")
 
+    # Checkout Keypop Reader Cpp Api dependency
     FetchContent_Declare(
 
-        googletest
+        KeypopReaderCppApi
 
-        GIT_REPOSITORY    https://github.com/google/googletest.git
-        GIT_TAG           v1.14.0
+        DOWNLOAD_EXTRACT_TIMESTAMP true
+        GIT_REPOSITORY https://github.com/eclipse-keypop/keypop-reader-cpp-api
+        GIT_TAG develop-2.0.0
     )
 
 ELSE()
 
     FetchContent_Declare(
 
-        googletest
+        KeypopReaderCppApi
 
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/googletest-src
+        SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/keypopreadercppapi-src
     )
 
 ENDIF()
 
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(googletest)
+FetchContent_MakeAvailable(KeypopReaderCppApi)

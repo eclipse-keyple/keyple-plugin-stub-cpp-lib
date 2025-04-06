@@ -1,34 +1,30 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
 
 #include <string>
 
-/* Keyple Plugin Stub */
-#include "KeyplePluginStubExport.h"
-#include "StubPluginFactoryAdapter.h"
-#include "StubPoolPluginFactory.h"
-#include "StubPoolPluginFactoryAdapter.h"
-#include "StubSmartCard.h"
-
-/* Keyple Core Plugin */
-#include "PoolPluginFactorySpi.h"
+#include "keyple/core/plugin/spi/PoolPluginFactorySpi.hpp"
+#include "keyple/core/plugin/spi/PoolPluginSpi.hpp"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/StubPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubPoolPluginFactory.hpp"
+#include "keyple/plugin/stub/StubPoolPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::plugin::spi;
+using keyple::core::plugin::spi::PoolPluginFactorySpi;
+using keyple::core::plugin::spi::PoolPluginSpi;
 
 using StubReaderConfiguration = StubPluginFactoryAdapter::StubReaderConfiguration;
 /**
@@ -89,14 +85,14 @@ public:
      *
      * @since 2.0.0
      */
-    const std::string& getPluginApiVersion() const override;
+    const std::string getPluginApiVersion() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    const std::string& getCommonApiVersion() const override;
+    const std::string getCommonApiVersion() const override;
 
     /**
      * {@inheritDoc}
@@ -130,6 +126,6 @@ private:
 
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

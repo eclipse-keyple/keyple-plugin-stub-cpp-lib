@@ -7,14 +7,24 @@
  * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
-#include "gtest/gtest.h"
+#pragma once
 
-int
-main(int argc, char** argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
+#include "keyple/core/common/KeyplePluginExtensionFactory.hpp"
 
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+namespace keyple {
+namespace plugin {
+namespace stub {
+
+using keyple::core::common::KeyplePluginExtensionFactory;
+
+/**
+ * Stub specific KeyplePluginExtensionFactory to be provided to the Keyple SmartCard service
+ * to register the Stub Pool plugin, built by StubPoolPluginFactoryBuilder.
+ *
+ * @since 2.0.0
+ */
+class StubPoolPluginFactory : public KeyplePluginExtensionFactory {};
+
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

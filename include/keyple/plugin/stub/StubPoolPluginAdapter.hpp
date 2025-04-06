@@ -1,13 +1,10 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
@@ -17,22 +14,21 @@
 #include <string>
 #include <vector>
 
-/* Keyple Plugin Stub */
-#include "KeyplePluginStubExport.h"
-#include "StubPluginAdapter.h"
-#include "StubPoolPlugin.h"
-#include "StubPoolPluginFactoryAdapter.h"
-#include "StubSmartCard.h"
-
-/* Keyple Core Plugin */
-#include "ObservablePluginSpi.h"
-#include "PoolPluginSpi.h"
+#include "keyple/core/plugin/spi/ObservablePluginSpi.hpp"
+#include "keyple/core/plugin/spi/PoolPluginSpi.hpp"
+#include "keyple/core/plugin/spi/reader/PoolReaderSpi.hpp"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/StubPluginAdapter.hpp"
+#include "keyple/plugin/stub/StubPoolPlugin.hpp"
+#include "keyple/plugin/stub/StubPoolPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::plugin::spi;
+using keyple::core::plugin::spi::PoolPluginSpi;
+using keyple::core::plugin::spi::reader::PoolReaderSpi;
 
 using StubPoolReaderConfiguration = StubPoolPluginFactoryAdapter::StubPoolReaderConfiguration;
 
@@ -84,7 +80,7 @@ public:
      *
      * @since 2.0.0
      */
-    std::shared_ptr<ReaderSpi> allocateReader(const std::string& readerGroupReference) override;
+    std::shared_ptr<PoolReaderSpi> allocateReader(const std::string& readerGroupReference) override;
 
     /**
      * {@inheritDoc}
@@ -169,6 +165,6 @@ private:
     const std::vector<std::string> listReadersByGroup(const std::string& aGroupReference);
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

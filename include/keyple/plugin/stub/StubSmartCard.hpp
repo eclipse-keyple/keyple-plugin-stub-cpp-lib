@@ -1,13 +1,10 @@
 /**************************************************************************************************
- * Copyright (c) 2022 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
@@ -18,15 +15,14 @@
 #include <string>
 #include <vector>
 
-/* Keyple Plugin Stub */
-#include "ApduResponseProviderSpi.h"
-#include "KeyplePluginStubExport.h"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/spi/ApduResponseProviderSpi.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::plugin::stub::spi;
+using keyple::plugin::stub::spi::ApduResponseProviderSpi;
 
 /**
  * Simulated smart card that can be inserted into a {@link StubReader}. Use the {@link Builder} to
@@ -36,6 +32,11 @@ using namespace keyple::plugin::stub::spi;
  */
 class KEYPLEPLUGINSTUB_API StubSmartCard {
 public:
+    /**
+     * Provides methods to add simulated commands and responses to a StubSmartCard builder.
+     *
+     * @since 2.1.0
+     */
     class SimulatedCommandStep {
     public:
         /**
@@ -58,6 +59,11 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * Build step for creating a {@link StubSmartCard} instance.
+     *
+     * @since 2.1.0
+     */
     class BuildStep {
     public:
         /**
@@ -69,6 +75,11 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * CommandStep interface provides methods to build and configure a StubSmartCard object.
+     *
+     * @since 2.0.0
+     */
     class CommandStep {
     public:
         /**
@@ -103,6 +114,11 @@ public:
         virtual std::shared_ptr<StubSmartCard> build() = 0;
     };
 
+    /**
+     * Provides a method to define the simulated protocol for the StubSmartCard to build.
+     *
+     * @since 2.0.0
+     */
     class ProtocolStep {
     public:
         /**
@@ -115,6 +131,11 @@ public:
         virtual CommandStep& withProtocol(const std::string& protocol) = 0;
     };
 
+    /**
+     * Provides a method for defining simulated power-on data for the StubSmartCard to build.
+     *
+     * @since 2.0.0
+     */
     class PowerOnDataStep {
     public:
         /**
@@ -330,6 +351,6 @@ private:
                   const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */
