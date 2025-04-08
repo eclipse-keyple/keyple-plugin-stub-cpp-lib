@@ -1,13 +1,10 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
@@ -17,31 +14,29 @@
 #include <string>
 #include <vector>
 
-/* Keyple Core Util */
-#include "LoggerFactory.h"
-
-/* Keyple Core Plugin */
-#include "ConfigurableReaderSpi.h"
-#include "ObservableReaderSpi.h"
-#include "WaitForCardInsertionNonBlockingSpi.h"
-#include "WaitForCardRemovalDuringProcessingBlockingSpi.h"
-#include "WaitForCardRemovalNonBlockingSpi.h"
-
-/* Keyple Plugin Stub */
-#include "KeyplePluginStubExport.h"
-#include "StubReader.h"
-#include "StubSmartCard.h"
+#include "keyple/core/plugin/spi/reader/ConfigurableReaderSpi.hpp"
+#include "keyple/core/plugin/spi/reader/PoolReaderSpi.hpp"
+#include "keyple/core/plugin/spi/reader/observable/ObservableReaderSpi.hpp"
+#include "keyple/core/plugin/spi/reader/observable/state/insertion/CardInsertionWaiterNonBlockingSpi.hpp"
+#include "keyple/core/plugin/spi/reader/observable/state/removal/CardRemovalWaiterNonBlockingSpi.hpp"
+#include "keyple/core/util/cpp/Any.hpp"
+#include "keyple/core/util/cpp/LoggerFactory.hpp"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/StubReader.hpp"
+#include "keyple/plugin/stub/StubSmartCard.hpp"
 
 namespace keyple {
 namespace plugin {
 namespace stub {
 
-using namespace keyple::core::plugin::spi::reader;
-using namespace keyple::core::plugin::spi::reader::observable;
-using namespace keyple::core::plugin::spi::reader::observable::state::insertion;
-using namespace keyple::core::plugin::spi::reader::observable::state::processing;
-using namespace keyple::core::plugin::spi::reader::observable::state::removal;
-using namespace keyple::core::util::cpp;
+using keyple::core::plugin::spi::reader::ConfigurableReaderSpi;
+using keyple::core::plugin::spi::reader::PoolReaderSpi;
+using keyple::core::plugin::spi::reader::observable::ObservableReaderSpi;
+using keyple::core::plugin::spi::reader::observable::state::insertion::CardInsertionWaiterNonBlockingSpi;
+using keyple::core::plugin::spi::reader::observable::state::removal::CardRemovalWaiterNonBlockingSpi;
+using keyple::core::util::cpp::any;
+using keyple::core::util::cpp::Logger;
+using keyple::core::util::cpp::LoggerFactory;
 
 /**
  * (package-private)<br>
@@ -52,10 +47,10 @@ using namespace keyple::core::util::cpp;
 class KEYPLEPLUGINSTUB_API StubReaderAdapter final
 : public StubReader,
   public ConfigurableReaderSpi,
+  public PoolReaderSpi,
   public ObservableReaderSpi,
-  public WaitForCardInsertionNonBlockingSpi,
-  public WaitForCardRemovalDuringProcessingBlockingSpi,
-  public WaitForCardRemovalNonBlockingSpi {
+  public CardInsertionWaiterNonBlockingSpi,
+  public CardRemovalWaiterNonBlockingSpi {
 public:
     /**
      * (package-private)<br>
@@ -207,16 +202,23 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0.0
+     * @since 2.2.0
      */
-    void waitForCardRemovalDuringProcessing() override;
+    std::shared_ptr<any> getSelectedSmartCard() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0.0
+     * @since 2.2.0
      */
-    void stopWaitForCardRemovalDuringProcessing() override;
+    int getCardInsertionMonitoringSleepDuration() const override;
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.2.0
+     */
+    int getCardRemovalMonitoringSleepDuration() const override;
 
 private:
     /**
@@ -250,6 +252,6 @@ private:
     std::atomic<bool> mContinueWaitForCardRemovalTask;
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */

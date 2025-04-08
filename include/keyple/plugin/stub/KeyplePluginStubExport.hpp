@@ -7,14 +7,14 @@
  * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
-#include "gtest/gtest.h"
+#pragma once
 
-int
-main(int argc, char** argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+#if defined(WIN32)
+#if defined(KEYPLEPLUGINSTUB_EXPORT)
+#define KEYPLEPLUGINSTUB_API __declspec(dllexport)
+#else
+#define KEYPLEPLUGINSTUB_API __declspec(dllimport)
+#endif
+#else
+#define KEYPLEPLUGINSTUB_API
+#endif

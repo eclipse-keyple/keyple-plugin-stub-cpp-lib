@@ -1,13 +1,10 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
- * See the NOTICE file(s) distributed with this work for additional information regarding         *
- * copyright ownership.                                                                           *
+ * This program and the accompanying materials are made available under the                       *
+ * terms of the MIT License which is available at https://opensource.org/licenses/MIT.            *
  *                                                                                                *
- * This program and the accompanying materials are made available under the terms of the Eclipse  *
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
- *                                                                                                *
- * SPDX-License-Identifier: EPL-2.0                                                               *
+ * SPDX-License-Identifier: MIT                                                                   *
  **************************************************************************************************/
 
 #pragma once
@@ -17,14 +14,12 @@
 #include <string>
 #include <vector>
 
-/* Keyple Core Plugin */
-#include "ObservablePluginSpi.h"
-
-/* Keyple Plugin Stub */
-#include "KeyplePluginStubExport.h"
-#include "StubPlugin.h"
-#include "StubPluginFactoryAdapter.h"
-#include "StubReaderAdapter.h"
+#include "keyple/core/plugin/spi/ObservablePluginSpi.hpp"
+#include "keyple/core/plugin/spi/reader/ReaderSpi.hpp"
+#include "keyple/plugin/stub/KeyplePluginStubExport.hpp"
+#include "keyple/plugin/stub/StubPlugin.hpp"
+#include "keyple/plugin/stub/StubPluginFactoryAdapter.hpp"
+#include "keyple/plugin/stub/StubReaderAdapter.hpp"
 
 namespace keyple {
 namespace plugin {
@@ -32,7 +27,8 @@ namespace stub {
 
 using StubReaderConfiguration = StubPluginFactoryAdapter::StubReaderConfiguration;
 
-using namespace keyple::core::plugin::spi;
+using keyple::core::plugin::spi::ObservablePluginSpi;
+using keyple::core::plugin::spi::reader::ReaderSpi;
 
 /**
  * (package-private)<br>
@@ -71,7 +67,7 @@ public:
 
     /**
      * {@inheritDoc}
-     *
+     *@
      * @since 2.0.0
      */
     std::shared_ptr<ReaderSpi> searchReader(const std::string& readerName) override;
@@ -130,6 +126,6 @@ private:
     std::map<std::string, std::shared_ptr<StubReaderAdapter>> mStubReaders;
 };
 
-}
-}
-}
+} /* namespace stub */
+} /* namespace plugin */
+} /* namespace keyple */
