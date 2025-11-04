@@ -1,0 +1,23 @@
+/**
+ * @mainpage Keyple Plugin Stub C++ Library
+ *
+ * @section overview Overview
+ *
+ * The **Keyple Plugin Stub C++ Library** is a Keyple add-on that enables
+ * applications to interact with virtual readers and emulated smart cards,
+ * ideal for testing and development without physical hardware.
+ *
+ * @section key_features Key Features
+ *
+ * - Virtual reader simulation
+ * - Smart card emulation
+ * - Testing and development support
+ * - Configurable card responses
+ * - No physical hardware required
+ *
+ * @section resources Resources
+ *
+ * - **Documentation**: [keyple.org](https://keyple.org)
+ * - **API Documentation**: [docs.keyple.org/keyple-plugin-stub-cpp-lib](https://docs.keyple.org/keyple-plugin-cpp-java-lib)
+ * - **Examples**: [github.com/eclipse/keyple-cpp-example](https://github.com/eclipse/keyple-cpp-example)
+ */
