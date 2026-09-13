@@ -101,7 +101,7 @@ StubPoolPluginAdapter::allocateReader(const std::string& readerGroupReference)
     }
 
     throw PluginIOException(
-        "No reader is available in the groupReference : "
+        "No reader is available for the given group reference:"
         + readerGroupReference);
 }
 
@@ -113,8 +113,8 @@ StubPoolPluginAdapter::releaseReader(std::shared_ptr<ReaderSpi> readerSpi)
     const auto stub = std::dynamic_pointer_cast<StubReader>(readerSpi);
     if (!stub) {
         throw IllegalArgumentException(
-            "Can not release reader, Reader should be of type "
-            "StubReader");
+            std::string("Cannot cast 'readerSpi' to StubReader. Actual type: ")
+            + typeid(readerSpi).name());
     }
 
     const auto it = std::find(

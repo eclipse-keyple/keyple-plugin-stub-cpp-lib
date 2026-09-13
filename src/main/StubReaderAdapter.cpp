@@ -46,13 +46,13 @@ StubReaderAdapter::StubReaderAdapter(
 void
 StubReaderAdapter::onStartDetection()
 {
-    mLogger->trace("Detection has been started on reader %\n", getName());
+    // NOP
 }
 
 void
 StubReaderAdapter::onStopDetection()
 {
-    mLogger->trace("Detection has been stopped on reader %\n", getName());
+    // NOP
 }
 
 const std::string&
@@ -134,7 +134,7 @@ const std::vector<uint8_t>
 StubReaderAdapter::transmitApdu(const std::vector<uint8_t>& apduIn)
 {
     if (mSmartCard == nullptr) {
-        throw CardIOException("No card available.");
+        throw CardIOException("No card is available");
     }
 
     return mSmartCard->processApdu(apduIn);
@@ -159,22 +159,26 @@ StubReaderAdapter::insertCard(std::shared_ptr<StubSmartCard> smartCard)
 
     if (checkCardPresence()) {
         mLogger->warn(
-            "You must remove the inserted card before inserted another one\n");
+            "[readerExt=%] A card is already inserted. First remove the " \
+            "inserted card before inserting a new one\n",
+            getName());
         return;
     }
 
     const std::string protocol = smartCard->getCardProtocol();
     if (!Arrays::contains(mActivatedProtocols, protocol)) {
         mLogger->trace(
-            "Inserted card protocol % does not match any activated protocol, "
-            "please "
-            "use activateProtocol() method\n",
+            "[readerExt=%] Inserted card protocol does not match any " \
+            "activated protocol. Please use 'activateProtocol()' method first" \
+            "[cardProtocol=%]\n",
+            getName(),
             protocol);
 
         return;
     }
 
-    mLogger->trace("Inserted card %\n", smartCard);
+    mLogger->trace(
+        "[readerExt=%] Card inserted [smartCard=%]\n", getName(), smartCard);
 
     mSmartCard = smartCard;
 }
@@ -183,7 +187,10 @@ void
 StubReaderAdapter::removeCard()
 {
     if (mSmartCard != nullptr) {
-        mLogger->trace("Remove card %\n", mSmartCard);
+        mLogger->trace(
+            "[readerExt=%] Card removed [smartCard=%]\n",
+            getName(),
+            mSmartCard);
         closePhysicalChannel();
         mSmartCard = nullptr;
     }
