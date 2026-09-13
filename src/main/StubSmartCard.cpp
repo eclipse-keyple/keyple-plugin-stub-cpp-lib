@@ -135,7 +135,7 @@ StubSmartCard::processApdu(const std::vector<uint8_t>& apduIn)
     }
 
     /* Throw a CardIOException if not found */
-    throw CardIOException("No response available for this request: " + hexApdu);
+    throw CardIOException("No response is available for request: " + hexApdu);
 }
 
 std::ostream&

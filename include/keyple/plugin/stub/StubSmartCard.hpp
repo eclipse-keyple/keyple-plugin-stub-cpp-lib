@@ -354,9 +354,9 @@ private:
      * using <code>apduResponseProvider</code> if it is not null or <code>hexCommands</code> by
      * default.
      *
-     * @param powerOnData (non nullable) power-on data of the card
-     * @param cardProtocol (non nullable) card protocol
-     * @param hexCommands (non nullable) set of simulated commands
+     * @param powerOnData (non-nullable) power-on data of the card
+     * @param cardProtocol (non-nullable) card protocol
+     * @param hexCommands (non-nullable) set of simulated commands
      * @param apduResponseProvider (nullable) an external provider of simulated
      * commands
      * @since 2.0.0
