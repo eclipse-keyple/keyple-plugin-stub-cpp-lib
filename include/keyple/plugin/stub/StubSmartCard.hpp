@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <ostream>
@@ -161,7 +162,7 @@ public:
          * @since 2.0.0
          */
         virtual ProtocolStep&
-        withPowerOnData(const std::vector<uint8_t>& powerOnData)
+        withPowerOnData(const std::vector<std::uint8_t>& powerOnData)
             = 0;
     };
 
@@ -202,7 +203,7 @@ public:
          * @since 2.0.0
          */
         ProtocolStep&
-        withPowerOnData(const std::vector<uint8_t>& powerOnData) override;
+        withPowerOnData(const std::vector<std::uint8_t>& powerOnData) override;
 
         /**
          * {@inheritDoc}
@@ -224,7 +225,7 @@ public:
         /**
          *
          */
-        std::vector<uint8_t> mPowerOnData;
+        std::vector<std::uint8_t> mPowerOnData;
 
         /**
          *
@@ -268,7 +269,7 @@ public:
      * @return Null if no power-on data are available.
      * @since 2.0.0
      */
-    const std::vector<uint8_t>& getPowerOnData() const;
+    const std::vector<std::uint8_t>& getPowerOnData() const;
 
     /**
      * (package-private) <br>
@@ -303,7 +304,7 @@ public:
      * @return APDU response
      * @since 2.0.0
      */
-    const std::vector<uint8_t> processApdu(const std::vector<uint8_t>& apduIn);
+    const std::vector<std::uint8_t> processApdu(const std::vector<std::uint8_t>& apduIn);
 
     /**
      * {@inheritDoc}
@@ -325,7 +326,7 @@ private:
     /**
      *
      */
-    const std::vector<uint8_t> mPowerOnData;
+    const std::vector<std::uint8_t> mPowerOnData;
 
     /**
      *
@@ -362,7 +363,7 @@ private:
      * @since 2.0.0
      */
     StubSmartCard(
-        const std::vector<uint8_t>& powerOnData,
+        const std::vector<std::uint8_t>& powerOnData,
         const std::string& cardProtocol,
         const std::map<std::string, std::string>& hexCommands,
         const std::shared_ptr<ApduResponseProviderSpi> apduResponseProvider);

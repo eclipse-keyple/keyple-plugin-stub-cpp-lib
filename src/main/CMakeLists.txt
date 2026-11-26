@@ -12,11 +12,11 @@ SET(LIBRARY_NAME keyplepluginstubcpplib)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKEYPLEPLUGINSTUB_EXPORT")
 
-# Include deps
-INCLUDE("CMakeLists.txt.keyple-common")
-INCLUDE("CMakeLists.txt.keyple-plugin")
-INCLUDE("CMakeLists.txt.keyple-util")
-INCLUDE("CMakeLists.txt.keypop-reader")
+# Dependencies are supplied by Conan (requires) via CMakeDeps
+FIND_PACKAGE(keyple-common-cpp-api REQUIRED CONFIG)
+FIND_PACKAGE(keyple-plugin-cpp-api REQUIRED CONFIG)
+FIND_PACKAGE(keyple-util-cpp-lib REQUIRED CONFIG)
+FIND_PACKAGE(keypop-reader-cpp-api REQUIRED CONFIG)
 
 ADD_LIBRARY(
 
@@ -62,4 +62,20 @@ ADD_LIBRARY(
     ALIAS
 
     ${LIBRARY_NAME}
+)
+
+INSTALL(
+
+    TARGETS ${LIBRARY_NAME}
+
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+INSTALL(
+
+    DIRECTORY ${PROJECT_SOURCE_DIR}/include/
+
+    DESTINATION include
 )
